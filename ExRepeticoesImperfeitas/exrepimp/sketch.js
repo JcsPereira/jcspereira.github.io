@@ -9,7 +9,7 @@
 //Docente: Marco Heleno
 //data da avaliação?
 
-var x, y, cor01, cor02, xPOL, yPOL, t, n, BG_nLinhas, BG_nColunas, nElementos, raio;
+var x1, y1, cor01, cor02, xPOL, yPOL, t, n, BG_nLinhas, BG_nColunas, nElementos, raio;
 var Y_AXIS = 1;
 var hex = [];
 
@@ -42,8 +42,8 @@ function setup()
 
 function draw()
 {
-  x = width / 2;
-  y = height / 2;
+  x1 = width / 2;
+  y1 = height / 2;
 
   // ++++ BG - COR ++++
 
@@ -137,9 +137,9 @@ function polygon(x, y, radius, npoints) {
 
 class Hexagono{
 
-  constructor(x1, y1) {
-    this.x = x1
-    this.y = y1
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
   }
 
   move() {
