@@ -11,6 +11,7 @@
 
 var x, y, cor01, cor02, xPOL, yPOL, t, n, BG_nLinhas, BG_nColunas, nElementos, raio;
 var Y_AXIS = 1;
+var hex = [];
 
 function preload() 
 {
@@ -25,8 +26,6 @@ function setup()
 
   //frameRate(1);
  
-  var hex = [];
-
   nElementos = 12;
 
   t = height / nElementos;
