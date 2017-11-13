@@ -7,37 +7,32 @@
 //Design Multimedia
 //ESAD.CR
 //Docente: Marco Heleno
-//data da avaliação?
 
-var x1, y1, cor01, cor02, xPOL, yPOL, t, n, BG_nLinhas, BG_nColunas, nElementos, raio;
+var x1, y1, cor01, cor02, xPOL, yPOL, t, n, BG_inc_alpha, BG_mult_alpha, BG_rnd_shape, BG_nLinhas, BG_nColunas, nElementos, svg_img;
 var Y_AXIS = 1;
-var hex = [];
 
 function preload() 
 {
-  svg_img = loadImage("image/Hexagon.svg");
+  svg_img = loadImage("image/Hexagono_02.png");
 }
 
 function setup()
 {
-  createCanvas (windowWidth, windowHeight);
+  //createCanvas (windowWidth, windowHeight);
   //createCanvas (596, 842, SVG);
-  //createCanvas (596, 842);
+  createCanvas (596, 842);
 
-  //frameRate(1);
  
   nElementos = 12;
 
   t = height / nElementos;
   
+  BG_inc_alpha = 0;
+  BG_mult_alpha = 1;
+  BG_rnd_shape = 6;
   BG_nLinhas = height/t;
   BG_nColunas = t;
-
-  for (var i = 0; i < 3; i++) {
-    hex[i] = new Hexagono(width/2,200);
-    
-  }
-
+  
 }
 
 function draw()
@@ -57,58 +52,45 @@ function draw()
 
   // ++++ BG - HEXAGONOS ++++
 
-  fill(249, 181, 172, 120);
+  if (BG_inc_alpha == 60) { BG_mult_alpha = -1;                                             //Variação do Alpha
+  }else if (BG_inc_alpha == 0) {  BG_mult_alpha = 1; BG_rnd_shape = int(random(4,7)); }
+  
+  BG_inc_alpha += 1 * BG_mult_alpha;
+
+  fill(249, 181, 172, BG_inc_alpha);
   noStroke();
 
-  //desenhar_hexagono(x,y);
 
   for (var xPOL = 0; xPOL < BG_nColunas; xPOL++) {
     for (var yPOL = 0; yPOL <= BG_nLinhas; yPOL++) {
-      if (xPOL % 2 == 0) {                      //Verificar se e par
+      if (xPOL % 2 == 0) {                              //Verificar se e par
         push();
         translate(xPOL*(t*0.85), yPOL*t);
-        //rotate(frameCount / -100.0);
-        polygon(0, 0, t/1.9, 6);                  // t/ = raio
+        rotate(frameCount / 100.0);
+        polygon(0, 0, t/1.9, BG_rnd_shape);                        // t/ = raio
         pop();
       } else {
         push();
         translate(xPOL*(t*0.85), yPOL*t+(t/2));
-        //rotate(frameCount / -100.0);
-        polygon(0, 0, t/1.9, 6); 
+        rotate(frameCount / -100.0);
+        polygon(0, 0, t/1.9, BG_rnd_shape); 
         pop();
       }
-      
     }
   }
   
-  // ++++ LINHAS ++++
-
-
 
   // ++++ LOGO ++++
 
-  for (var i = 0; i < hex.length; i++) {
-    hex[i].move();
-    hex[i].show();
-  }
+  var map_value;
 
+  if (mouseX >= 0 && mouseX <= 596/2) { map_value = map(mouseX,0,596/2,250,280); }else if (mouseX >= 596/2 && mouseX <= 596) { map_value = map(mouseX,596/2,596,280,250); }else{map_value=280;}
 
+  imageMode(CENTER);
+  image(svg_img, width/2, height/2, map_value, 320);
 }
 
-/* function desenhar_hexagono(p1, p2)
-{
-  noStroke();
-  fill(255,0,0);
-  beginShape();
-    vertex( p1-40, p2-50);
-    vertex( p1+50, p2-50);
-    vertex( p1+85, p2);
-    vertex( p1+50, p2+50);
-    vertex( p1-50, p2+50);
-    vertex( p1-85, p2);
-  endShape(CLOSE);
-  
-} */
+// ------ FUNCTIONS ------
 
 function setGradient(x, y, w, h, c1, c2, axis) {
   
@@ -135,23 +117,6 @@ function polygon(x, y, radius, npoints) {
   endShape(CLOSE);
 }
 
-class Hexagono{
-
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  move() {
-    this.x = this.x + random(-2,2);
-    this.y = this.y + random(-2,2);
-  }
-
-  show() {
-    image(svg_img, this.x, this.y, 100, 100);
-  }
-}
-
 function keyPressed() {
   if (key === "G") {
     noLoop();
@@ -159,7 +124,9 @@ function keyPressed() {
   }
 }
 
-function windowResized() 
+/* function windowResized() 
 {
   resizeCanvas (windowWidth, windowHeight);
-}
+} */
+
+
