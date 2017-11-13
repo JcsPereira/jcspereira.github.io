@@ -10,6 +10,7 @@
 
 var x1, y1, cor01, cor02, xPOL, yPOL, t, n, BG_inc_alpha, BG_mult_alpha, BG_rnd_shape, BG_nLinhas, BG_nColunas, nElementos, svg_img;
 var Y_AXIS = 1;
+var hexag = [];
 
 function preload() 
 {
@@ -18,7 +19,6 @@ function preload()
 
 function setup()
 {
-  //createCanvas (windowWidth, windowHeight);
   //createCanvas (596, 842, SVG);
   createCanvas (596, 842);
 
@@ -32,7 +32,6 @@ function setup()
   BG_rnd_shape = 6;
   BG_nLinhas = height/t;
   BG_nColunas = t;
-  
 }
 
 function draw()
@@ -63,7 +62,7 @@ function draw()
 
   for (var xPOL = 0; xPOL < BG_nColunas; xPOL++) {
     for (var yPOL = 0; yPOL <= BG_nLinhas; yPOL++) {
-      if (xPOL % 2 == 0) {                              //Verificar se e par
+      if (xPOL % 2 == 0) {                                          //Verificar se e par
         push();
         translate(xPOL*(t*0.85), yPOL*t);
         rotate(frameCount / 100.0);
@@ -78,25 +77,41 @@ function draw()
       }
     }
   }
-  
+
+
+  // ++++ PARTICULAS ++++
+
+  var obj = new Hexagonos();
+  hexag.push(obj);                  //Cria particula a cada DRAW
+
+  for (var i = 0; i < hexag.length; i++) {
+    hexag[i].update();
+    hexag[i].show();
+    if (hexag[i].finish()) {
+      // remover particula quando a opacidade for 0
+      hexag.splice(i, 1);
+    } 
+  }
+
 
   // ++++ LOGO ++++
 
   var map_value;
+  
+    if (mouseX >= 0 && mouseX <= 596/2) { map_value = map(mouseX,0,596/2,250,280); }else if (mouseX >= 596/2 && mouseX <= 596) { map_value = map(mouseX,596/2,596,280,250); }else{map_value=280;}
+  
+    imageMode(CENTER);
+    image(svg_img, width/2, height/2, map_value, 320);
 
-  if (mouseX >= 0 && mouseX <= 596/2) { map_value = map(mouseX,0,596/2,250,280); }else if (mouseX >= 596/2 && mouseX <= 596) { map_value = map(mouseX,596/2,596,280,250); }else{map_value=280;}
-
-  imageMode(CENTER);
-  image(svg_img, width/2, height/2, map_value, 320);
 }
 
 // ------ FUNCTIONS ------
 
-function setGradient(x, y, w, h, c1, c2, axis) {
+function setGradient(x, y, w, h, c1, c2, axis) {        // Gradiente
   
   noFill();
 
-  if (axis == Y_AXIS) {  // Top to bottom gradient
+  if (axis == Y_AXIS) {                       
     for (var i = y; i <= y+h; i++) {
       var inter = map(i, y, y+h, 0, 1);
       var c = lerpColor(c1, c2, inter);
@@ -117,16 +132,35 @@ function polygon(x, y, radius, npoints) {
   endShape(CLOSE);
 }
 
+function Hexagonos() {            //Classe para generação das particulas
+  this.x = width/2;
+  this.y = height/2;
+  this.vx = random(-3, 3);
+  this.vy = random(-5, 5);
+  this.alpha = 255;
+
+  this.finish = function () {     //Metodo que retorna se o alpha é 0
+    return this.alpha < 0;
+  };
+
+  this.update = function () {     //Metodo que aplica velocidade nos objectos
+    this.x += this.vx;
+    this.y += this.vy;
+    this.alpha -= 2;
+  };
+
+  this.show = function () {       //Metodo que deseja o elemento
+    noStroke();
+    fill(152,114,132, this.alpha);
+    ellipse(this.x, this.y, 8);
+  };
+}
+
 function keyPressed() {
   if (key === "G") {
     noLoop();
     save("Cartaz_EVA_Circuitos.svg");
   }
 }
-
-/* function windowResized() 
-{
-  resizeCanvas (windowWidth, windowHeight);
-} */
 
 
